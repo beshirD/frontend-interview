@@ -1,4 +1,5 @@
 "use client";
+import useFetchUsers from "@/hooks/userHooks/useFetchUsers";
 import React, { useState } from "react";
 
 function App() {
@@ -18,23 +19,43 @@ function App() {
   const USER_API = "https://jsonplaceholder.typicode.com/users";
 
   // TODO: Implement function to handle sync button click
+
+  const { data, isLoading, error } = useFetchUsers();
   const handleSyncData = () => {
     // ...
   };
 
-  return (
-    <div className="text-center mx-auto p-4">
-      <h1 className="text-3xl font-semibold mb-4">Simple CRUD Application</h1>
-      <button
-        className="bg-blue-500 p-4 rounded-md text-white cursor-pointer"
-        onClick={handleSyncData}
-      >
-        Sync
-      </button>
-      {/* TODO: Implement ItemList component */}
-      {/* TODO: Implement ItemForm component */}
-    </div>
-  );
+  console.log(data);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p className=""> Something went wrong</p>;
+  if (data)
+    return (
+      <div>
+        <div className=" w-full flex flex-col items-center py-10 gap-2">
+          <p className=" text-2xl font-bold">Simple CRUD Application</p>
+          <button
+            className="bg-blue-500 text-white px-2 py-1 w-min rounded shadow"
+            onClick={() => setIsSynced(!isSynced)}
+          >
+            {isSynced ? "Sync" : "UnSync"}
+          </button>
+        </div>
+        <div className=" w-1/2 flex flex-col items-center">
+          <p className=" font-bold text-xl">Item list</p>
+          <ul className=" px-10 flex flex-col  gap-5 w-full ">
+            {data.map((user) => (
+              <li className=" bg-neutral-100 w-full p-2 rounded shadow flex justify-between">
+                {user.name}
+                <button className=" rounded bg-red-400 text-white px-2 py-1">
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
 }
 
 export default App;
